@@ -29,21 +29,22 @@ def get_overdue_to_alert():
 
 
 def send_test_sms(to_number, body):
-    to_number = str(to_number).strip()
-    to_number = to_number.replace("+", "")
-    to_number = "+1" + to_number[-10:]
+    try:
+        client = Client(settings.TWILIO_ACCOUNT_SID,
+                        settings.TWILIO_AUTH_TOKEN)
 
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+        message = client.messages.create(
+            body=body,
+            from_=settings.TWILIO_PHONE_NUMBER,
+            to=to_number,
+        )
 
-    message = client.messages.create(
-        body=body,
-        from_=settings.TWILIO_PHONE_NUMBER,
-        to=to_number,
-    )
+        print(f"SMS sent with SID: {message.sid}")
+        return message.sid
 
-    print(f"Sending from: {settings.TWILIO_PHONE_NUMBER}")
-    print(f"Sending to: {to_number}")
-    print(f"SMS sent with SID: {message.sid}")
+    except Exception as e:
+        print(f"Twilio error: {e}")
+        raise
 
 
 def process_dose_alerts():
@@ -196,21 +197,3 @@ def process_dose_alerts():
         print(f"OVERDUE alert sent for dose ID {dose.id}")
         dose.overdue_alert_sent = True
         dose.save()
-
-
-def send_test_sms(to_number, body):
-    to_number = str(to_number).strip()
-
-    to_number = to_number.replace("+", "")
-
-    to_number = "+1" + to_number[-10:]
-
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
-    message = client.messages.create(
-        body=body,
-        from_=settings.TWILIO_PHONE_NUMBER,
-        to=to_number
-    )
-
-    print(f"SMS sent with SID: {message.sid}")
