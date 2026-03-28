@@ -26,7 +26,11 @@ SECRET_KEY = 'django-insecure-!*t_p9n#luiu0_#9^t76(g2^n*_%$on4^ze2o!fl-4zpjn%t1m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "smart-med-tracker.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
 
 
 # Application definition
